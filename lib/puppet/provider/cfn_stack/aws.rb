@@ -23,6 +23,10 @@ Puppet::Type.type(:cfn_stack).provide(:aws) do
 		cf.create_stack(@resource[:name], options)
 	end
 
+	def update
+		info "Want to update stack #{@resource[:name]}"
+	end
+
 	def destroy
 		cf.delete_stack(@resource[:name])
 	end

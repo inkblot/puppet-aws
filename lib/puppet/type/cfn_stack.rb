@@ -43,4 +43,8 @@ Puppet::Type.newtype(:cfn_stack) do
 			raise(Puppet::Error, 'aws_access_key_id and aws_secret_access_key are required.')
 		end
 	end
+
+	def refresh
+		provider.update
+	end
 end
