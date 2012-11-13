@@ -19,6 +19,14 @@ Puppet::Type.type(:cfn_stack).provide(:aws) do
 		cf.create_stack(@resource[:name], get_options)
 	end
 
+	def latest
+		if exists?
+			update
+		else
+			create
+		end
+	end
+
 	def update
 		cf.update_stack(@resource[:name], get_options)
 	end

@@ -12,7 +12,7 @@ Puppet::Type.newtype(:cfn_stack) do
 		end
 
 		newvalue :latest do
-			provider.update
+			provider.latest
 		end
 
 		newvalue :absent do
