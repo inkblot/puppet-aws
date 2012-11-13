@@ -11,20 +11,11 @@ Puppet::Type.type(:cfn_stack).provide(:aws) do
 	end
 
 	def create
-		options = {}
-		if @resource[:template_file]
-			options['TemplateBody'] = IO.read(@resource[:template_file])
-		elsif @resource[:template_url]
-			options['TemplateURL'] = @resource[:template_url]
-		end
-		if @resource[:parameters]
-			options['Parameters'] = @resource[:parameters]
-		end
-		cf.create_stack(@resource[:name], options)
+		cf.create_stack(@resource[:name], get_options)
 	end
 
 	def update
-		info "Want to update stack #{@resource[:name]}"
+		cf.update_stack(@resource[:name], get_options)
 	end
 
 	def destroy
@@ -34,6 +25,19 @@ Puppet::Type.type(:cfn_stack).provide(:aws) do
 	private
 	def cf
 		CloudFormation.new(:aws_access_key_id => @resource[:aws_access_key_id], :aws_secret_access_key => @resource[:aws_secret_access_key])
+	end
+
+	def get_options
+		options = {}
+		if @resource[:template_file]
+			options['TemplateBody'] = IO.read(@resource[:template_file])
+		elsif @resource[:template_url]
+			options['TemplateURL'] = @resource[:template_url]
+		end
+		if @resource[:parameters]
+			options['Parameters'] = @resource[:parameters]
+		end
+		options
 	end
 
 end
