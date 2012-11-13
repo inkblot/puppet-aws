@@ -1,6 +1,7 @@
 # ex:ts=2 sw=2 tw=72
 
 require 'fog'
+require 'digest/md5'
 
 include Fog::AWS
 
@@ -8,6 +9,10 @@ Puppet::Type.type(:cfn_stack).provide(:aws) do
 
 	def exists?
 		!cf.describe_stacks.body['Stacks'].index { |stack| stack['StackName'] == @resource[:name] }.nil?
+	end
+
+	def latest?
+		template_hash == deployed_template_hash
 	end
 
 	def create
@@ -38,6 +43,22 @@ Puppet::Type.type(:cfn_stack).provide(:aws) do
 			options['Parameters'] = @resource[:parameters]
 		end
 		options
+	end
+
+	def deployed_template_hash
+		if @resource[:template_file]
+			Digest::MD5.hexdigest(cf.get_template(@resource[:name]).body['TemplateBody'])
+		else
+			''
+		end
+	end
+
+	def template_hash
+		if @resource[:template_file]
+			Digest::MD5.hexdigest(IO.read(@resource[:template_file]))
+		else
+			''
+		end
 	end
 
 end

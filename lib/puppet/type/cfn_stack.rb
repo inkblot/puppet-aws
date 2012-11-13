@@ -6,7 +6,44 @@ Puppet::Type.newtype(:cfn_stack) do
 		Ensures that a specified AWS CloudFormation Stack is in the desired state.
 	EOT
 
-	ensurable
+	ensurable do
+		newvalue :present do
+			provider.create
+		end
+
+		newvalue :latest do
+			provider.update
+		end
+
+		newvalue :absent do
+			provider.destroy
+		end
+
+		def insync?(is)
+			case should
+				when :present
+					if [ :latest, :present ].include?(is)
+						true
+					else
+						false
+					end
+				else
+					is == should
+			end
+		end
+
+		def retrieve
+			if provider.exists?
+				if provider.latest?
+					:latest
+				else
+					:present
+				end
+			else
+				:absent
+			end
+		end
+	end
 
 	newparam(:name, :namevar => true) do
 		desc 'An arbitrary name for the CloudFormation stack.'
