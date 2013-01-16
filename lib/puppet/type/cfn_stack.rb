@@ -1,5 +1,7 @@
 # ex:ts=2 sw=2 tw=72
 
+require 'aws_puppet'
+
 Puppet::Type.newtype(:cfn_stack) do
 
 	desc <<-EOT
@@ -63,10 +65,12 @@ Puppet::Type.newtype(:cfn_stack) do
 
 	newparam(:aws_access_key_id) do
 		desc 'The AWS Access Key Id to use for authentication with AWS.'
+		defaultto AWSPuppet.aws_access_key_id
 	end
 
 	newparam(:aws_secret_access_key) do
 		desc 'The AWS Secret Key that corresponds to the AWS Access Key Id.'
+		defaultto AWSPuppet.aws_secret_key
 	end
 
 	validate do
