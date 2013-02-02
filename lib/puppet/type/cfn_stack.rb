@@ -63,25 +63,12 @@ Puppet::Type.newtype(:cfn_stack) do
 		desc 'A hash of parameters to use with the template.'
 	end
 
-	newparam(:aws_access_key_id) do
-		desc 'The AWS Access Key Id to use for authentication with AWS.'
-		defaultto AWSPuppet.aws_access_key_id
-	end
-
-	newparam(:aws_secret_access_key) do
-		desc 'The AWS Secret Key that corresponds to the AWS Access Key Id.'
-		defaultto AWSPuppet.aws_secret_key
-	end
-
 	validate do
 		if self[:template_file] and self[:template_url]
 			raise(Puppet::Error, 'Only one of template_file or template_url may be specified')
 		end
 		unless self[:template_file] or self[:template_url]
 			raise(Puppet::Error, 'One of template_file or template_url must be specified.')
-		end
-		unless self[:aws_access_key_id] and self[:aws_secret_access_key]
-			raise(Puppet::Error, 'aws_access_key_id and aws_secret_access_key are required.')
 		end
 	end
 

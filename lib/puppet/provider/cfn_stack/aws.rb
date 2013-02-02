@@ -1,5 +1,6 @@
 # ex:ts=2 sw=2 tw=72
 
+require 'aws_puppet'
 require 'fog'
 require 'digest/md5'
 
@@ -8,7 +9,7 @@ include Fog::AWS
 Puppet::Type.type(:cfn_stack).provide(:aws) do
 
 	def exists?
-		!cf.describe_stacks.body['Stacks'].index { |stack| stack['StackName'] == @resource[:name] }.nil?
+		!AWSPuppet.cf.describe_stacks.body['Stacks'].index { |stack| stack['StackName'] == @resource[:name] }.nil?
 	end
 
 	def latest?
@@ -28,18 +29,14 @@ Puppet::Type.type(:cfn_stack).provide(:aws) do
 	end
 
 	def update
-		cf.update_stack(@resource[:name], get_options)
+		AWSPuppet.cf.update_stack(@resource[:name], get_options)
 	end
 
 	def destroy
-		cf.delete_stack(@resource[:name])
+		AWSPuppet.cf.delete_stack(@resource[:name])
 	end
 
 	private
-	def cf
-		CloudFormation.new(:aws_access_key_id => @resource[:aws_access_key_id], :aws_secret_access_key => @resource[:aws_secret_access_key])
-	end
-
 	def get_options
 		options = {}
 		if @resource[:template_file]

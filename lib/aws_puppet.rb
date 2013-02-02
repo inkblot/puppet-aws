@@ -6,6 +6,20 @@ require 'fog'
 module AWSPuppet
 	module_function
 
+	def cfn_status(stack_name)
+		cfn_stack(stack_name)['StackStatus']
+	end
+
+	def cfn_output(stack_name, output_key)
+		cfn_stack(stack_name)['Outputs'].select { |output| output['OutputKey'] == output_key }['OutputValue']
+	end
+
+	def cfn_stack(name)
+		cf.describe_stacks({
+			'StackName' => name
+		}).body['Stacks'].select { |stack| stack['StackName'] == name }
+	end
+
 	def cf
 		@cf ||= CloudFormation.new(
 			:aws_access_key_id => aws_access_key_id,

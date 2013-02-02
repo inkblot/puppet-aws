@@ -8,9 +8,7 @@ module Puppet::Parser::Functions
 		stack_name = args[0]
 		output_key = args[1]
 		if AWSPuppet.cf
-			AWSPuppet.cf.describe_stacks({
-				'StackName' => stack_name
-			}).body['Stacks'].first { |stack| stack['StackName'] == stack_name }['Outputs'].first { |output| output['OutputKey'] == output_key }['OutputValue']
+			AWSPuppet.cfn_output(stack_name, output_key)
 		end
 	end
 
