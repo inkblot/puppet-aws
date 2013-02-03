@@ -9,7 +9,7 @@ include Fog::AWS
 Puppet::Type.type(:cfn_stack).provide(:aws) do
 
 	def exists?
-		!AWSPuppet.cfn_stack(@resource[:name]).empty?
+		!AWSPuppet.cf.describe_stacks.body['Stacks'].index { |stack| stack['StackName'] == @resource[:name] }.nil?
 	end
 
 	def latest?
@@ -18,6 +18,13 @@ Puppet::Type.type(:cfn_stack).provide(:aws) do
 
 	def create
 		AWSPuppet.cf.create_stack(@resource[:name], get_options)
+		begin
+			sleep(5)
+		end while !exists? or AWSPuppet.cfn_status(@resource[:name]).end_with?('_IN_PROGRESS')
+		if AWSPuppet.cfn_status(@resource[:name]) != 'CREATE_COMPLETE'
+			destroy
+			raise(Puppet::Error, 'Failed to create stack')
+		end
 	end
 
 	def latest
@@ -30,10 +37,20 @@ Puppet::Type.type(:cfn_stack).provide(:aws) do
 
 	def update
 		AWSPuppet.cf.update_stack(@resource[:name], get_options)
+		begin
+			sleep(5)
+		end while AWSPuppet.cfn_status(@resource[:name]).end_with?('_IN_PROGRESS')
+		if AWSPuppet.cfn_status(@resource[:name]) != 'UPDATE_COMPLETE'
+			destroy
+			raise(Puppet::Error, 'Failed to update stack')
+		end
 	end
 
 	def destroy
 		AWSPuppet.cf.delete_stack(@resource[:name])
+		begin
+			sleep(5)
+		end while exists?
 	end
 
 	private
