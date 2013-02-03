@@ -9,7 +9,7 @@ include Fog::AWS
 Puppet::Type.type(:cfn_stack).provide(:aws) do
 
 	def exists?
-		!AWSPuppet.cf.describe_stacks.body['Stacks'].index { |stack| stack['StackName'] == @resource[:name] }.nil?
+		!AWSPuppet.cfn_stack(@resource[:name]).empty?
 	end
 
 	def latest?
@@ -17,7 +17,7 @@ Puppet::Type.type(:cfn_stack).provide(:aws) do
 	end
 
 	def create
-		cf.create_stack(@resource[:name], get_options)
+		AWSPuppet.cf.create_stack(@resource[:name], get_options)
 	end
 
 	def latest
@@ -52,7 +52,7 @@ Puppet::Type.type(:cfn_stack).provide(:aws) do
 
 	def deployed_template_hash
 		if @resource[:template_file]
-			Digest::MD5.hexdigest(cf.get_template(@resource[:name]).body['TemplateBody'])
+			Digest::MD5.hexdigest(AWSPuppet.cf.get_template(@resource[:name]).body['TemplateBody'])
 		else
 			''
 		end

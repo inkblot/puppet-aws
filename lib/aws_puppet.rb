@@ -17,7 +17,7 @@ module AWSPuppet
 	def cfn_stack(name)
 		cf.describe_stacks({
 			'StackName' => name
-		}).body['Stacks'].select { |stack| stack['StackName'] == name }
+		}).body['Stacks'].select { |stack| stack['StackName'] == name }.first
 	end
 
 	def cf
