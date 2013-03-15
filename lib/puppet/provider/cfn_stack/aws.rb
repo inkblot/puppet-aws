@@ -18,8 +18,10 @@ Puppet::Type.type(:cfn_stack).provide(:aws) do
 
 	def create
 		AWSPuppet.cf.create_stack(@resource[:name], get_options)
+		interval = 10
 		begin
-			sleep(5)
+			sleep(interval)
+			interval = ((interval * 13).round / 10) % 60
 		end while !exists? or AWSPuppet.cfn_status(@resource[:name]).end_with?('_IN_PROGRESS')
 		if AWSPuppet.cfn_status(@resource[:name]) != 'CREATE_COMPLETE'
 			destroy
@@ -37,8 +39,10 @@ Puppet::Type.type(:cfn_stack).provide(:aws) do
 
 	def update
 		AWSPuppet.cf.update_stack(@resource[:name], get_options)
+		interval = 10
 		begin
-			sleep(5)
+			sleep(interval)
+			interval = ((interval * 13).round / 10) % 60
 		end while AWSPuppet.cfn_status(@resource[:name]).end_with?('_IN_PROGRESS')
 		if AWSPuppet.cfn_status(@resource[:name]) != 'UPDATE_COMPLETE'
 			destroy
@@ -48,8 +52,10 @@ Puppet::Type.type(:cfn_stack).provide(:aws) do
 
 	def destroy
 		AWSPuppet.cf.delete_stack(@resource[:name])
+		interval = 10
 		begin
-			sleep(5)
+			sleep(interval)
+			interval = ((interval * 13).round / 10) % 60
 		end while exists?
 	end
 
