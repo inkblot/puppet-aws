@@ -21,7 +21,7 @@ Puppet::Type.type(:cfn_stack).provide(:aws) do
 		interval = 10
 		begin
 			sleep(interval)
-			interval = ((interval * 13).round / 10) % 60
+			interval = (interval * 13 / 10) % 60
 		end while !exists? or AWSPuppet.cfn_status(@resource[:name]).end_with?('_IN_PROGRESS')
 		if AWSPuppet.cfn_status(@resource[:name]) != 'CREATE_COMPLETE'
 			destroy
@@ -42,7 +42,7 @@ Puppet::Type.type(:cfn_stack).provide(:aws) do
 		interval = 10
 		begin
 			sleep(interval)
-			interval = ((interval * 13).round / 10) % 60
+			interval = (interval * 13 / 10) % 60
 		end while AWSPuppet.cfn_status(@resource[:name]).end_with?('_IN_PROGRESS')
 		if AWSPuppet.cfn_status(@resource[:name]) != 'UPDATE_COMPLETE'
 			destroy
@@ -55,7 +55,7 @@ Puppet::Type.type(:cfn_stack).provide(:aws) do
 		interval = 10
 		begin
 			sleep(interval)
-			interval = ((interval * 13).round / 10) % 60
+			interval = (interval * 13 / 10) % 60
 		end while exists?
 	end
 
