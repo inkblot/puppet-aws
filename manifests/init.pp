@@ -1,7 +1,7 @@
 class aws {
 
 	package { 'fog':
-		ensure   => '1.7.0',
+		ensure   => latest,
 		provider => gem,
 	}
 
