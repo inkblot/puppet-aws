@@ -6,7 +6,7 @@ require 'digest/md5'
 
 include Fog::AWS
 
-Puppet::Type.type(:cfn_stack).provide(:aws) do
+Puppet::Type.type(:cfn_stack).provide(:fog) do
 
 	def exists?
 		!AWSPuppet.cf.describe_stacks.body['Stacks'].index { |stack| stack['StackName'] == @resource[:name] }.nil?
