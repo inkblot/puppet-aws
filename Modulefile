@@ -1,0 +1,8 @@
+name	'inkblot/aws'
+version '0.0.1'
+source	'git://github.com/inkblot/puppet-aws'
+author	'inkblot'
+license	'Apache 2.0'
+summary 'AWS cloud services'
+description 'A Puppet module to interact with Amazon Web Services from Puppet manifests'
+project_page 'https://github.com/inkblot/puppet-aws'
