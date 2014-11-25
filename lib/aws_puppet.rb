@@ -10,10 +10,6 @@ module AWSPuppet
 		cfn_stack(stack_name)['StackStatus']
 	end
 
-	def cfn_output(stack_name, output_key)
-		cfn_stack(stack_name)['Outputs'].select { |output| output['OutputKey'] == output_key }['OutputValue']
-	end
-
 	def cfn_stack(name)
 		cf.describe_stacks({
 			'StackName' => name
