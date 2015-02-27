@@ -1,6 +1,6 @@
 # ex: syntax=ruby sw=2 ts=2 si et
 
-require 'aws/cloud_formation'
+require 'aws-sdk-v1'
 
 module Puppet::Parser::Functions
 
