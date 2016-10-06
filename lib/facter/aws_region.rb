@@ -1,11 +1,16 @@
 # ex: syntax=ruby ts=2 sw=2 si et
 require 'facter'
 
-if Facter.value(:ec2_placement_availability_zone)
-  Facter.add(:aws_region) do
-    setcode do
-      /(?<region>[a-z]+-[a-z]+-[0-9])[a-z]/ =~ Facter.value(:ec2_placement_availability_zone)
-      region
-    end
+Facter.add(:aws_region) do
+  confine :ec2_metadata do |meta|
+    Facter.debug("Attempting aws_region confinement using ec2_metadata=#{meta.inspect}")
+    !meta.nil?
   end
-end 
+
+  setcode do
+    az = Facter.value(:ec2_metadata)['placement']['availability-zone']
+    Facter.debug("Availability zone: #{az}")
+    /(?<region>[a-z]+-[a-z]+-[0-9])[a-z]/ =~ az
+    region
+  end
+end
