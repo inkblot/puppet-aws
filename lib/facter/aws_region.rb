@@ -3,7 +3,6 @@ require 'facter'
 
 Facter.add(:aws_region) do
   confine :ec2_metadata do |meta|
-    Facter.debug("Attempting aws_region confinement using ec2_metadata=#{meta.inspect}")
     !meta.nil?
   end
 
